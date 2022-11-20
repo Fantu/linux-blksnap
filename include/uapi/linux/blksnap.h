@@ -239,7 +239,8 @@ struct blk_snap_snapshot_create {
 	struct blk_snap_dev *dev_id_array;
 	struct blk_snap_uuid id;
 };
-/**
+
+/*
  * This ioctl creates a snapshot structure in the memory and allocates an
  * identifier for it. Further interaction with the snapshot is possible by
  * this identifier.
