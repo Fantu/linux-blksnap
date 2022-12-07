@@ -20,6 +20,9 @@ was eliminated in the 5.10 kernel.
 The block device filtering mechanism returns the ability to handle I/O units.
 It is possible to safely attach one filter to a block device "on the fly"
 without changing the structure of block devices.
+Only support one filter for each block device, as there is only blksnap
+in the kernel using it.
+See :ref:`Documentation/block/blksnap.rst`.
 
 Design
 ======
@@ -37,3 +40,9 @@ The link counter allows to control the filter lifetime.  When the reference
 count is reduced to zero, the detach_cb() callback function is called to
 release the filter.  This allows the filter to be released when the block
 device is disconnected.
+
+Functions documentation
+=======================
+
+.. kernel-doc:: block/bdev.c
+   :functions: bdev_filter_attach bdev_filter_detach
