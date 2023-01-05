@@ -84,7 +84,7 @@ struct blksnap_uuid {
  *	Current changes number.
  */
 struct blksnap_cbtinfo {
-	__u64 device_capacity; // ? see BLKGETSIZE64
+	__u64 device_capacity; /* ? see BLKGETSIZE64 */
 	__u32 block_size;
 	__u32 block_count;
 	struct blksnap_uuid generation_id;
@@ -334,7 +334,7 @@ struct blksnap_snapshot_event {
 	__s64 time_label;
 	__u8 data[4096 - 32];
 };
-static_assert(sizeof(struct blksnap_snapshot_event) == 4096,
+_Static_assert(sizeof(struct blksnap_snapshot_event) == 4096,
 	"The size struct blksnap_snapshot_event should be equal to the size of the page.");
 
 /**
