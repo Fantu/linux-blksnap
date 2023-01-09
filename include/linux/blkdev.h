@@ -74,16 +74,16 @@ struct partition_meta_info {
 /**
  * DOC: genhd capability flags
  *
- * ``GENHD_FL_REMOVABLE``: indicates that the block device gives access to
+ * ``GENHD_FL_REMOVABLE`` (0x01): indicates that the block device gives access to
  * removable media.  When set, the device remains present even when media is not
  * inserted.  Shall not be set for devices which are removed entirely when the
  * media is removed.
  *
- * ``GENHD_FL_HIDDEN``: the block device is hidden; it doesn't produce events,
- * doesn't appear in sysfs, and can't be opened from userspace or using
- * blkdev_get*. Used for the underlying components of multipath devices.
+ * ``GENHD_FL_HIDDEN`` (0x02): the block device is hidden; it doesn't produce
+ * events, doesn't appear in sysfs, and can't be opened from userspace or
+ * using blkdev_get*. Used for the underlying components of multipath devices.
  *
- * ``GENHD_FL_NO_PART``: partition support is disabled.  The kernel will not
+ * ``GENHD_FL_NO_PART`` (0x04): partition support is disabled. The kernel will not
  * scan for partitions from add_disk, and users can't add partitions manually.
  *
  */

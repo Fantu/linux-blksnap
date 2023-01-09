@@ -8,3 +8,4 @@ This file documents the sysfs file ``block/<disk>/capability``.
 capabilities a specific block device supports:
 
 .. kernel-doc:: include/linux/blkdev.h
+    :DOC: genhd capability flags
