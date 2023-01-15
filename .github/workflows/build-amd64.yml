@@ -1,0 +1,33 @@
+name: Test build
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    name: amd64 - blksnap ${{ matrix.blksnap-option }}
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - blksnap-option: builtin
+          - blksnap-option: module
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Register problem matchers
+        run: |
+          echo "::add-matcher::.github/problem-matchers/compiler-source.json"
+          echo "::add-matcher::.github/problem-matchers/compiler-non-source.json"
+      - name: Install packages required
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential bison flex libncurses-dev libssl-dev libelf-dev dwarves
+
+      - name: Build kernel
+        run: |
+          cp .github/kconfig/amd64-blksnap-${{ matrix.blksnap-option }}.config .config
+          make olddefconfig
+          make W=1 -j`nproc`
