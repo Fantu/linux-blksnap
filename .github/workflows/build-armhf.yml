@@ -1,0 +1,31 @@
+name: Test build on armhf
+
+on: [workflow_dispatch]
+
+jobs:
+  build_job:
+    runs-on: ubuntu-22.04
+    name: allyesconfig
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Register problem matchers
+        run: |
+          echo "::add-matcher::.github/problem-matchers/compiler-source.json"
+          echo "::add-matcher::.github/problem-matchers/compiler-non-source.json"
+
+      - name: Install packages required
+        run: |
+         sudo apt-get update
+         sudo apt-get install -y build-essential bison flex libncurses-dev libssl-dev libelf-dev dwarves python3-dev
+         sudo apt-get install -y binutils-arm-linux-gnueabihf gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+
+      - name: Build kernel
+        run: |
+          make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- allyesconfig
+          ./scripts/kconfig/merge_config.sh -m .config .github/kconfig/disable-werror.config
+          make W=1 -j`nproc` ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+
