@@ -1,0 +1,80 @@
+# from https://github.com/ruscur/linux-ci/blob/merge/.github/workflows/powerpc-allconfig.yml
+name: powerpc/allconfig
+
+# Controls when the action will run.
+on:
+  # This allows the build to be triggered manually via the github UI.
+  workflow_dispatch:
+
+#  push:
+#    branches:
+#    - '*'
+
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+
+    continue-on-error: true
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # ppc64le allmod and allyes
+          - subarch: ppc64le
+            defconfig: ppc64le_allmodconfig
+            image: ubuntu-22.04
+          - subarch: ppc64le
+            defconfig: allmodconfig
+            image: ubuntu-22.04
+            merge_config: /linux/arch/powerpc/configs/le.config
+          # ppc64 allmod and allyes
+          - subarch: ppc64
+            defconfig: allmodconfig
+            image: ubuntu-22.04
+          - subarch: ppc64
+            defconfig: allyesconfig
+            image: ubuntu-22.04
+          # ppc32 allmod
+          - subarch: ppc
+            defconfig: ppc32_allmodconfig
+            image: ubuntu-22.04
+          # ppc64 book3e allmod
+          - subarch: ppc64
+            defconfig: ppc64_book3e_allmodconfig
+            image: ubuntu-22.04
+
+    env:
+      ARCH: powerpc
+      TARGET: kernel
+      CCACHE: 1
+      SUBARCH: ${{ matrix.subarch }}
+      IMAGE: ${{ matrix.image }}
+      DEFCONFIG: ${{ matrix.defconfig }}
+      MERGE_CONFIG: /linux/arch/powerpc/configs/disable-werror.config,${{ matrix.merge_config }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Register problem matchers
+      run: |
+        echo "::add-matcher::.github/problem-matchers/compiler-source.json"
+        echo "::add-matcher::.github/problem-matchers/compiler-non-source.json"
+    - name: Load ccache
+      uses: actions/cache@v3
+      with:
+        path: ~/.ccache
+        key: ${{ matrix.image }}-${{ matrix.subarch }}-${{ matrix.defconfig }}
+
+    - name: Build
+      run: |
+        mkdir -p ~/.ccache
+        ./arch/powerpc/tools/ci-build.sh
+
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.subarch }}-${{ matrix.defconfig }}-${{ matrix.image }}
+        path: |
+          ~/output/.config
+
