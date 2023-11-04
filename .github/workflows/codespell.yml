@@ -1,0 +1,17 @@
+name: Codespell
+on: [workflow_dispatch]
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: codespell
+        uses: codespell-project/actions-codespell@v2
+        with:
+          ignore_words_list: iput,filp,clen,hda,siz
+          only_warn: 1
+          path: |
+            block
