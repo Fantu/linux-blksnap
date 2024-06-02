@@ -20,4 +20,5 @@ jobs:
             include/linux/blk-filter.h, \
             include/uapi/linux/blk-filter.h, \
             drivers/block/blksnap, \
-            include/uapi/linux/blksnap.h
+            include/uapi/linux/blksnap.h, \
+            block
