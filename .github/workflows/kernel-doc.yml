@@ -1,0 +1,30 @@
+name: kernel-doc
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    name: check
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Register problem matchers
+        run: |
+          echo "::add-matcher::.github/problem-matchers/kernel-doc.json"
+      - name: Install packages required
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y perl
+
+      - name: Script kernel-doc
+        run: |
+          ./scripts/kernel-doc -v -none drivers/block/blksnap/* \
+          include/uapi/linux/blksnap.h \
+          block/blk-filter.c \
+          include/linux/blk-filter.h \
+          include/uapi/linux/blk-filter.h
